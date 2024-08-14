@@ -12,22 +12,29 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.border.Border;
 
 import controller.CounterListener;
+import controller.MouseListener;
 import model.CounterModel;
 
 public class CounterView extends JFrame{
 	private CounterModel counterModel;
 	private JLabel counterLabel = new JLabel("0", JLabel.CENTER) ;
 	private JToolBar jToolBar = new JToolBar();
+	private JTextArea jTextArea;
+	private JPanel inputStepsPanel = new JPanel(new GridLayout(1,2));
+	public JPopupMenu jPopupMenu;
 	public CounterView () {
 		this.counterModel = new CounterModel();
 		this.init();
@@ -39,8 +46,10 @@ public class CounterView extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		//ActionLisener
+		//ActionLisener + mouselistener
 		CounterListener counterListener = new  CounterListener(this);
+		MouseListener mouseListener = new MouseListener(this);
+		
 		
 		//Tạo font
 		Font font = new Font("Arial", Font.BOLD, 40);
@@ -122,6 +131,22 @@ public class CounterView extends JFrame{
 		jMenuBar.add(toolBarView);
 		jMenuBar.add(menuColor);
 		jMenuBar.add(exit);
+
+		//Tạo jpopup menu
+		jPopupMenu = new JPopupMenu();
+		JMenuItem inputStepsCall = new JMenuItem("Input steps");
+		inputStepsCall.addActionListener(counterListener);
+		jPopupMenu.add(inputStepsCall);
+		
+		
+		//Tạo textarea
+		jTextArea = new JTextArea();
+		jTextArea.setFont(font);
+		JButton buttonConfirm = new JButton("Confirm");
+		buttonConfirm.addActionListener(counterListener);
+		buttonConfirm.addActionListener(counterListener);
+		this.inputStepsPanel.add(buttonConfirm);
+		this.inputStepsPanel.add(jTextArea);
 		
 		//Tạo button
 		JButton buttonUp = new JButton();
@@ -137,6 +162,8 @@ public class CounterView extends JFrame{
 		this.counterLabel.setFont(font);
 		this.counterLabel.setOpaque(true);
 		
+		this.addMouseListener(mouseListener);;
+		
 		//Tạo panel
 		JPanel jPanelCenter = new JPanel();
 		jPanelCenter.setLayout(new GridLayout(1,3));
@@ -144,6 +171,8 @@ public class CounterView extends JFrame{
 		jPanelCenter.add(this.counterLabel);
 		jPanelCenter.add(buttonUp);
 		this.setLayout(new BorderLayout());
+		this.add(inputStepsPanel, BorderLayout.SOUTH);
+		this.inputStepsPanel.setVisible(false);
 		this.add(jToolBar, BorderLayout.NORTH);
 		this.jToolBar.setVisible(false);
 		this.setJMenuBar(jMenuBar);
@@ -171,5 +200,13 @@ public class CounterView extends JFrame{
 	}
 	public void viewToolBar(boolean x) {
 		this.jToolBar.setVisible(x);
+	}
+	public void showStepsInput() {
+		this.inputStepsPanel.setVisible(true);
+	}
+	public void confirmInputSteps() {
+		int steps = Integer.valueOf(this.jTextArea.getText());
+		this.counterModel.setSteps(steps);
+		this.inputStepsPanel.setVisible(false);
 	}
 }

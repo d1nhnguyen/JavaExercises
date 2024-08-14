@@ -61,6 +61,12 @@ public class CounterListener implements ActionListener{
 			AbstractButton button = (AbstractButton) e.getSource();
 			this.counterView.viewToolBar(button.getModel().isSelected());
 		}
+		else if(src.equals("Input steps")) {
+			this.counterView.showStepsInput();
+		}
+		else if(src.equals("Confirm")) {
+			this.counterView.confirmInputSteps();
+		}
 	}
 
 }
